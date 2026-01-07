@@ -1,19 +1,31 @@
-import time
-import random
+"""Основной файл с созданием списка клиентов и запуском работы парковки."""
 
-from handler.abc import ParkingEventHandler
+import random
+import time
+
+from constants import FREEZE_TIME
+from handler.abstract import ParkingEventHandler
 from handler.impl import ParkingEventHandlerImpl
-from models import Client, EventType
+from models import CarType, Client, EventType
 from parking import ParkingLot
 
 
 class ParkingService:
-    def __init__(self, handler: ParkingEventHandler, clients: list[Client], parking_lot: ParkingLot):
+    """Парковочный сервис."""
+
+    def __init__(
+        self,
+        handler: ParkingEventHandler,
+        clients: list[Client],
+        parking_lot: ParkingLot,
+    ):
+        """Инициализация обработчиков и клиентов парковки."""
         self.handler = handler
         self.parking = parking_lot
         self.clients = clients
 
     def run(self):
+        """Запуск основного цикла парковки."""
         print("🚗 Парковочный сервис запущен...")
 
         while self.clients:
@@ -44,13 +56,16 @@ class ParkingService:
 
             # Проверяем, не опустела ли парковка
             if not self.clients:
-                print("✅ Все клиенты обработаны, парковка пуста. Завершение работы.")
+                print("✅ Все клиенты обработаны, парковка пуста. "
+                      "Завершение работы.")
                 break
 
-            time.sleep(0.3)
+            # parking_lot.show_status()
+            time.sleep(FREEZE_TIME)
+
 
 if __name__ == "__main__":
-    car_types = ["regular", "electric", "premium"]
+    car_types = [CarType.REGULAR, CarType.ELECTRIC, CarType.PREMIUM]
 
     plates = [f"A{str(i).zfill(3)}AA" for i in range(1, 51)]
 
