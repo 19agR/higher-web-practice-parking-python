@@ -4,7 +4,7 @@ import random
 import time
 
 from constants import FREEZE_TIME
-from handler.abstract import ParkingEventHandler
+from handler.abc import ParkingEventHandler
 from handler.impl import ParkingEventHandlerImpl
 from models import CarType, Client, EventType
 from parking import ParkingLot

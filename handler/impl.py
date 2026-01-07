@@ -1,6 +1,6 @@
 """Модуль с реализацией обработчика для парковки."""
 
-from handler.abstract import ParkingEventHandler
+from handler.abc import ParkingEventHandler
 from models import Client
 from parking import ParkingLot
 
