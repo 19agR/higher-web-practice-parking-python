@@ -6,6 +6,12 @@ from models import CarType, Client, ParkingSpot, SpotType
 class ParkingLot:
     """Хранит информацию о местах и клиентах."""
 
+    ALLOWED_SPOTS_BY_CAR_TYPE = {
+        CarType.REGULAR: {SpotType.REGULAR},
+        CarType.PREMIUM: {SpotType.PREMIUM, SpotType.REGULAR},
+        CarType.ELECTRIC: {SpotType.ELECTRIC},
+    }
+
     def __init__(
         self,
         total_spots: int,
@@ -16,13 +22,6 @@ class ParkingLot:
         self.spots: list[ParkingSpot] = []
         self._init_spots(total_spots, electric_spots, premium_spots)
 
-        # правила, куда может встать каждый тип машин
-        self.ALLOWED_SPOTS_BY_CAR_TYPE = {
-            CarType.REGULAR: {SpotType.REGULAR},
-            CarType.PREMIUM: {SpotType.PREMIUM, SpotType.REGULAR},
-            CarType.ELECTRIC: {SpotType.ELECTRIC},
-        }
-
     def _init_spots(self, total, electric, premium):
         """Создание парковочных мест согласно количеству каждого типа."""
         types = (
@@ -31,7 +30,10 @@ class ParkingLot:
             [SpotType.REGULAR] * (total - electric - premium)
         )
 
-        self.spots = [ParkingSpot(i, t) for i, t in enumerate(types, start=1)]
+        self.spots = [
+            ParkingSpot(spot_number, spot_type)
+            for spot_number, spot_type in enumerate(types, start=1)
+        ]
 
     def _find_free_spot(self, client: Client) -> ParkingSpot | None:
         """Поиск первого подходящего места для парковки."""
@@ -40,8 +42,6 @@ class ParkingLot:
         for spot in self.spots:
             if spot.is_free() and spot.spot_type in allowed_spots:
                 return spot
-
-        return None
 
     def park_client(self, client: Client) -> bool:
         """Паркуем клиента на подходящее место."""
